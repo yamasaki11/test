@@ -1,44 +1,65 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.XR;
 
 //[ExecuteInEditMode]
 //[ExecuteAlways]
+
+class OriginalTransformInfo
+{
+    public void SetInfo(Transform src)
+    {
+        scale = src.localScale;
+        name = src.name;
+        position = src.localPosition;
+    }
+
+    public void SetTransform(Transform dest)
+    {
+        dest.localScale = scale;
+        dest.localPosition = position;
+    }
+    public Vector3 scale;
+    public string name;
+    public Vector3 position;
+}
 public class SegmentScaleExecutor : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    [SerializeField] private SegmentScale[] parameters ;
+    //[SerializeField] private SegmentScale[] parameters ;
 
     [SerializeField] private Transform RootBone;
-    private Vector3[] OriginalScale;
-    //private Vector3[] postTransformPosition;
-    private Vector3[] OriginalPosition;
+
     private Transform[] skelton;
+    
+    private OriginalTransformInfo[] originalInfo;
+    
+    private Vector3[] result;
     void Start()
     {
         skelton = RootBone.GetComponentsInChildren<Transform>(true);
         if (skelton.Length != 0)
         {
-            OriginalScale = new Vector3[ skelton.Length ];
-            OriginalPosition = new Vector3[ skelton.Length ];
+            //OriginalScale = new Vector3[ skelton.Length ];
+            //OriginalPosition = new Vector3[ skelton.Length ];
+            result = new Vector3[ skelton.Length ];
+            originalInfo = new OriginalTransformInfo[ skelton.Length ];
         }
-        //transform.
 
         var i = 0;
         foreach (var bone in skelton)
         {
-            OriginalScale[i] = bone.localScale;
             
+            originalInfo[i] = new OriginalTransformInfo();
+            originalInfo[i].SetInfo(bone);
             
-            OriginalPosition[i] = bone.localPosition;
-            //OriginalPosition[i] = bone.position;
             i++;
         }
-
-        //ResolveScaleMatrix();
+        
     }
 
     // Update is called once per frame
@@ -49,18 +70,32 @@ public class SegmentScaleExecutor : MonoBehaviour
         ResolveScaleMatrix();
     }
 
+    private OriginalTransformInfo GetOriginalScaleFromName(string name)
+    {
+        foreach (var info in originalInfo)
+        {
+            if (info.name == name)
+            {
+                return info;
+            } 
+        }
+
+        return null;
+    }
+
     private void ResolveScaleMatrix()
     {
+        var i = 0;
         foreach (var bone in skelton)
         {
             var scale = Vector3.one;
-            var finish = false;
+            //var finish = false;
             
             var current = bone.parent;
             if (bone.name != RootBone.name)
             {
                 
-                do
+                /*do
                 {
                     if (current.name == RootBone.name)
                     {
@@ -70,26 +105,31 @@ public class SegmentScaleExecutor : MonoBehaviour
                     var localScale = current.localScale;
                     scale = new Vector3(localScale.x * scale.x, localScale.y * scale.y, localScale.z * scale.z);
                     current = current.parent;
-                } while (finish != true);
-                
+                } while (finish != true);*/
                 //scale = bone.parent.localScale;
+
+                var info = GetOriginalScaleFromName(bone.parent.name);
+                if (info != null)
+                {
+                    scale = info.scale;
+                }
             }
 
-            Matrix4x4 ScaleMat = Matrix4x4.Scale(scale);
+            //Matrix4x4 ScaleMat = Matrix4x4.Scale(scale);
             var localBoneScale = bone.localScale;
             var inverseLocalScale = new Vector3(localBoneScale.x / scale.x, localBoneScale.y / scale.y,
                 localBoneScale.z / scale.z);
+            
+            result[i] = inverseLocalScale;
+            i++;
+        }
 
-            /*if (bone.name == "Character1_Spine")
-            {
-                Debug.Log(bone.name + bone.localScale);
-            }*/
-            bone.localScale = inverseLocalScale;
-            
-            //bone.localPosition = ScaleMat.MultiplyPoint(bone.localPosition);
-            //bone.position = ScaleMat.MultiplyPoint(bone.position);
-            
-        }        
+        i = 0;
+        foreach (var bone in skelton)
+        {
+            bone.localScale = result[i];
+            i++;
+        }
     }
 
     private void ResetLocalScale()
@@ -97,10 +137,12 @@ public class SegmentScaleExecutor : MonoBehaviour
         var i = 0;
         foreach (var bone in skelton)
         {
-            bone.localScale = OriginalScale[i];
+            //bone.localScale = OriginalScale[i];
             //bone.localPosition = OriginalPosition[i];
 
-            bone.position = OriginalPosition[i];
+            //bone.position = OriginalPosition[i];
+            
+            originalInfo[i].SetTransform(bone);
             i++;
         }        
     }

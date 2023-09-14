@@ -244,8 +244,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae27b9d983ba4fe891d32c024f4e920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parameters:
-  - {fileID: 0}
   RootBone: {fileID: 290917468}
 --- !u!4 &290917468 stripped
 Transform:
@@ -432,7 +430,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400200, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400224, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalScale.x
