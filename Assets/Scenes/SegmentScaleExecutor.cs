@@ -44,8 +44,6 @@ public class SegmentScaleExecutor : MonoBehaviour
         skelton = RootBone.GetComponentsInChildren<Transform>(true);
         if (skelton.Length != 0)
         {
-            //OriginalScale = new Vector3[ skelton.Length ];
-            //OriginalPosition = new Vector3[ skelton.Length ];
             result = new Vector3[ skelton.Length ];
             originalInfo = new OriginalTransformInfo[ skelton.Length ];
         }
@@ -94,20 +92,6 @@ public class SegmentScaleExecutor : MonoBehaviour
             var current = bone.parent;
             if (bone.name != RootBone.name)
             {
-                
-                /*do
-                {
-                    if (current.name == RootBone.name)
-                    {
-                        finish = true;
-                    }
-
-                    var localScale = current.localScale;
-                    scale = new Vector3(localScale.x * scale.x, localScale.y * scale.y, localScale.z * scale.z);
-                    current = current.parent;
-                } while (finish != true);*/
-                //scale = bone.parent.localScale;
-
                 var info = GetOriginalScaleFromName(bone.parent.name);
                 if (info != null)
                 {
@@ -128,6 +112,8 @@ public class SegmentScaleExecutor : MonoBehaviour
         foreach (var bone in skelton)
         {
             bone.localScale = result[i];
+            var scaleMatrix = Matrix4x4.Scale(new Vector3(1 / result[i].x, 1 / result[i].y, 1 / result[i].z));
+            //bone.localPosition = scaleMatrix.MultiplyPoint(bone.localPosition);
             i++;
         }
     }
@@ -137,14 +123,14 @@ public class SegmentScaleExecutor : MonoBehaviour
         var i = 0;
         foreach (var bone in skelton)
         {
-            //bone.localScale = OriginalScale[i];
-            //bone.localPosition = OriginalPosition[i];
-
-            //bone.position = OriginalPosition[i];
-            
             originalInfo[i].SetTransform(bone);
             i++;
         }        
+    }
+    
+    private void OnValidate()
+    {
+        Debug.Log("test");
     }
 
     /*private void LateUpdate()
