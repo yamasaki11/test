@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.XR;
 
 //[ExecuteInEditMode]
@@ -26,22 +27,44 @@ class OriginalTransformInfo
     public string name;
     public Vector3 position;
 }
+
+[ExecuteAlways]
 public class SegmentScaleExecutor : MonoBehaviour
 {
     // Start is called before the first frame update
 
     //[SerializeField] private SegmentScale[] parameters ;
 
-    [SerializeField] private Transform RootBone;
+    [SerializeField] private Transform rootBone;
 
     private Transform[] skelton;
     
     private OriginalTransformInfo[] originalInfo;
     
     private Vector3[] result;
+    
+    public Transform RootBone => rootBone;
+
+    public void ResetOriginalInfo()
+    {
+        var i = 0;
+        foreach (var bone in skelton)
+        {
+            originalInfo[i].SetInfo(bone);
+            i++;
+        }        
+        
+    }
+    
     void Start()
     {
-        skelton = RootBone.GetComponentsInChildren<Transform>(true);
+
+        Init();
+    }
+
+    public void Init()
+    {
+        skelton = rootBone.GetComponentsInChildren<Transform>(true);
         if (skelton.Length != 0)
         {
             result = new Vector3[ skelton.Length ];
@@ -57,15 +80,14 @@ public class SegmentScaleExecutor : MonoBehaviour
             
             i++;
         }
-        
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        ResetLocalScale();
-        ResolveScaleMatrix();
+        //ResetLocalScale();
+        //ResolveScaleMatrix();
     }
 
     private OriginalTransformInfo GetOriginalScaleFromName(string name)
@@ -81,7 +103,7 @@ public class SegmentScaleExecutor : MonoBehaviour
         return null;
     }
 
-    private void ResolveScaleMatrix()
+    public void ResolveScaleMatrix()
     {
         var i = 0;
         foreach (var bone in skelton)
@@ -90,7 +112,7 @@ public class SegmentScaleExecutor : MonoBehaviour
             //var finish = false;
             
             var current = bone.parent;
-            if (bone.name != RootBone.name)
+            if (bone.name != rootBone.name)
             {
                 var info = GetOriginalScaleFromName(bone.parent.name);
                 if (info != null)
@@ -128,39 +150,4 @@ public class SegmentScaleExecutor : MonoBehaviour
         }        
     }
     
-    private void OnValidate()
-    {
-        Debug.Log("test");
-    }
-
-    /*private void LateUpdate()
-    {
-        foreach (var param in parameters)
-        {
-            param.SetScale();
-        }
-    }*/
-
-
-    /*private void OnPreRender()
-    {
-        //Debug.Log("OnPreRender");
-
-        foreach (var param in parameters)
-        {
-            param.SetScale();
-
-        }
-    }*/
-    
-
-    private void OnPreCull()
-    {
-
-    }
-
-    private void OnPostRender()
-    {
-        //Debug.Log("OnPostRender");
-    }
 }
