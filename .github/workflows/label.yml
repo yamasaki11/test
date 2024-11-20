@@ -1,0 +1,12 @@
+name: Analyze Diff
+
+on:
+  pull_request:
+
+jobs:
+  analyze_diff:
+    runs-on: mac6
+    steps:
+      - uses: actions/checkout@v3
+      - name: Analyze Diff
+        run: git diff --stat origin/main ${{ github.event.pull_request.head.sha }}
