@@ -9,7 +9,7 @@ jobs:
     env:
       UNITY_PROJECT_PATH: ./
       UNITY_VERSION: 2022.2.21f1
-      CODE_INSPECT: CodeInspect.sh
+      CODE_INSPECT: InspectCode.sh
       UNITY_SOLUTION_NAME: test.sln
       INSPECTOR_OUTPUT_FILENAME: isuue.json
     steps:
