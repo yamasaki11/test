@@ -30,8 +30,8 @@ jobs:
         run: |
           git reset --hard
           git clean -df
-      - name: Analyze Diff
-        run: git diff --stat origin/main ${{ github.event.pull_request.head.sha }}
+      #- name: Analyze Diff
+      #  run: git diff --stat origin/main ${{ github.event.pull_request.head.sha }}
       - name: StaticAlalyze
         id: set_json_content
         run: |
@@ -40,7 +40,7 @@ jobs:
           echo finish context
           # the following lines are only required for multi line json
           #content="${content//'%'/'%25'}"
-          #content="${content//$'\n'/'%0A'}"
+          content="${content//$'\n'/'%0A'}"
           #content="${content//$'\r'/'%0D'}"
           echo finish replace
           # end of optional handling for multi line json
