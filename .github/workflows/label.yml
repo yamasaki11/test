@@ -20,7 +20,7 @@ jobs:
           lfs: true
       - name: InstallTool
         run: |
-          brew install jq
+          arch -arm64 brew install jq
       - name: CreateProjectFIle
         run: |
           #一応毎回消しとく
