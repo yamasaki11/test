@@ -18,6 +18,9 @@ jobs:
           fetch-depth: 0
           clean: false
           lfs: true
+      - name: InstallTool
+        run: |
+          brew install jq
       - name: CreateProjectFIle
         run: |
           #一応毎回消しとく
@@ -45,7 +48,7 @@ jobs:
           
           # end of optional handling for multi line json
           #echo "::set-output name=IssueJson::$content"
-          echo "IssueJson=$content" >> $GITHUB_OUTPUT
+          #echo "IssueJson=$content" >> $GITHUB_OUTPUT
       - name : Echo
         run: |
-          echo "${{fromJson(steps.set_json_content.outputs.IssueJson).runs.results.ruleId}}"
+          jq '.runs[].results[].ruleId' $INSPECTOR_OUTPUT_FILENAME
