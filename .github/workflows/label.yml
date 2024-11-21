@@ -35,7 +35,7 @@ jobs:
       - name: StaticAlalyze
         id: set_json_content
         run: |
-          #$INSPECTCODE $UNITY_SOLUTION_NAME -o=$INSPECTOR_OUTPUT_FILENAME
+          $INSPECTCODE $UNITY_SOLUTION_NAME -o=$INSPECTOR_OUTPUT_FILENAME
           content=`cat $INSPECTOR_OUTPUT_FILENAME | tr -d '\n'`
           echo finish context
           # the following lines are only required for multi line json
