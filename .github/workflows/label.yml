@@ -18,7 +18,7 @@ jobs:
         run: |
           # Unityのインストールディレクトリへのパスを環境変数に設定
           unityPath="/Applications/Unity/Hub/Editor/2022.2.21f1/Unity.app/Contents/MacOS/Unity"
-          pwd
+          #pwd
           # バッチモードで実行
           $unityPath -batchmode -quit -projectPath $UNITY_PROJECT_PATH -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution
           #$unityPath -batchmode -quit -logFile "build.log" -executeMethod Solution.DotnetProjectUtility.CreateProject
