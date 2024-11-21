@@ -11,7 +11,14 @@ jobs:
         with:
           fetch-depth: 0
           clean: false
-          lfs: true      
+          lfs: true
+      - name: Unity Build
+        run: |
+          # Unityのインストールディレクトリへのパスを環境変数に設定
+          unityPath="/Applications/Unity/Hub/Editor/2022.2.21f1/Unity.app/Contents/MacOS/Unity"
+          pwd
+          # バッチモードで実行
+          #$unityPath -batchmode -quit -logFile "build.log" -executeMethod Solution.DotnetProjectUtility.CreateProject
       - name: CleanLocalFiles
         run: |
           git reset --hard
