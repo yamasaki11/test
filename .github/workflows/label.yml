@@ -37,10 +37,12 @@ jobs:
         run: |
           $INSPECTCODE $UNITY_SOLUTION_NAME -o=$INSPECTOR_OUTPUT_FILENAME
           content=`cat $INSPECTOR_OUTPUT_FILENAME`
+          echo finish context
           # the following lines are only required for multi line json
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
+          echo finish replace
           # end of optional handling for multi line json
           echo "::set-output name=IssueJson::$content"
           #echo "IssueJson=$content" >> $GITHUB_OUTPUT 
