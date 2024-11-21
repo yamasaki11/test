@@ -48,4 +48,4 @@ jobs:
           echo "IssueJson=$content" >> $GITHUB_OUTPUT
       - name : Echo
         run: |
-          echo "${{fromJson(steps.set_json_content.outputs.IssueJson).version}}"
+          echo "${{fromJson(steps.set_json_content.outputs.IssueJson).runs.results.ruleId}}"
