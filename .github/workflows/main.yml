@@ -6,7 +6,6 @@ on:
 jobs:
   analyze-changes:
     runs-on: self-hosted
-
     steps:
       # リポジトリをチェックアウト
       - uses: actions/checkout@v4
