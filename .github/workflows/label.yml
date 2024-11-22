@@ -7,24 +7,40 @@ jobs:
   analyze_diff:
     runs-on: self-hosted
     env:
+
       UNITY_PROJECT_PATH: ./
+      UNITY_VERSION: 2022.2.21f1
+      INSPECTCODE: InspectCode.sh
+      UNITY_SOLUTION_NAME: test.sln
+      INSPECTOR_OUTPUT_FILENAME: isuue.json
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           clean: false
           lfs: true
-      - name: Unity Build
+      - name: InstallTool
         run: |
+          arch -arm64 brew install jq
+      - name: CreateProjectFIle
+        run: |
+          #一応毎回消しとく
+          rm -f *.csproj *.sln
           # Unityのインストールディレクトリへのパスを環境変数に設定
-          unityPath="/Applications/Unity/Hub/Editor/2022.2.21f1/Unity.app/Contents/MacOS/Unity"
-          #pwd
+          unityPath="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
           # バッチモードで実行
           $unityPath -batchmode -quit -projectPath $UNITY_PROJECT_PATH -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution
-          #$unityPath -batchmode -quit -logFile "build.log" -executeMethod Solution.DotnetProjectUtility.CreateProject
       - name: CleanLocalFiles
         run: |
           git reset --hard
           git clean -df
       - name: Analyze Diff
-        run: git diff --stat origin/main ${{ github.event.pull_request.head.sha }}
+        run: git diff --name-only --unified=0 origin/main ${{ github.event.pull_request.head.sha }}
+      - name: StaticAlalyze
+        id: set_json_content
+        run: |
+          $INSPECTCODE $UNITY_SOLUTION_NAME -o=$INSPECTOR_OUTPUT_FILENAME
+          #content=`cat $INSPECTOR_OUTPUT_FILENAME | tr -d '\n'`
+      - name : Echo
+        run: |
+          jq '.runs[].results[].ruleId' $INSPECTOR_OUTPUT_FILENAME
