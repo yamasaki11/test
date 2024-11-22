@@ -24,3 +24,5 @@ jobs:
           curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "${{ github.event.pull_request.url }}/files" > pr_files.json
+      - name: Output Changed Files JSON
+        run: cat pr_files.json
