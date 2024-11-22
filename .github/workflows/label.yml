@@ -33,22 +33,13 @@ jobs:
         run: |
           git reset --hard
           git clean -df
-      #- name: Analyze Diff
-      #  run: git diff --stat origin/main ${{ github.event.pull_request.head.sha }}
+      - name: Analyze Diff
+        run: git diff --name-only --unified=0 origin/main ${{ github.event.pull_request.head.sha }}
       - name: StaticAlalyze
         id: set_json_content
         run: |
           $INSPECTCODE $UNITY_SOLUTION_NAME -o=$INSPECTOR_OUTPUT_FILENAME
-          content=`cat $INSPECTOR_OUTPUT_FILENAME | tr -d '\n'`
-          
-          # the following lines are only required for multi line json
-          #content="${content//'%'/'%25'}"
-          #content="${content//$'\n'/'%0A'}"
-          #content="${content//$'\r'/'%0D'}"
-          
-          # end of optional handling for multi line json
-          #echo "::set-output name=IssueJson::$content"
-          #echo "IssueJson=$content" >> $GITHUB_OUTPUT
+          #content=`cat $INSPECTOR_OUTPUT_FILENAME | tr -d '\n'`
       - name : Echo
         run: |
           jq '.runs[].results[].ruleId' $INSPECTOR_OUTPUT_FILENAME
