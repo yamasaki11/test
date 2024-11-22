@@ -7,7 +7,6 @@ jobs:
   analyze_diff:
     runs-on: self-hosted
     env:
-    
       UNITY_PROJECT_PATH: ./
       UNITY_VERSION: 2022.2.21f1
       INSPECTCODE: InspectCode.sh
