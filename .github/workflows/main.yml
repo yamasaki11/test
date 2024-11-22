@@ -3,7 +3,6 @@ name: Get PR Changes
 on:
   pull_request:
     types: [opened, synchronize]
-
 jobs:
   analyze-changes:
     runs-on: self-hosted
