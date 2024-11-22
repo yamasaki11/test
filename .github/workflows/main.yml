@@ -1,0 +1,27 @@
+name: Get PR Changes
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  analyze-changes:
+    runs-on: self-hosted
+
+    steps:
+      # リポジトリをチェックアウト
+      - name: Checkout repository
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          clean: false
+          lfs: true
+
+      # プルリクエストの変更内容を取得
+      - name: Get PR changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Fetching changed files and diffs..."
+          curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "${{ github.event.pull_request.url }}/files" > pr_files.json
