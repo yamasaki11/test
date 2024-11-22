@@ -23,6 +23,8 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           REPO=${{ github.repository }}
+          echo $PR_NUMBER
+          echo $REPO
           echo "Fetching changed files for PR #$PR_NUMBER in $REPO"
           curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
